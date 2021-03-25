@@ -29,7 +29,6 @@ export const RickAndMortyDetailContainer: React.FC = () => {
   const updateRickAndMortyCharacter = async (character: RickAndMortyDetailVm) => {
     const updatedCharacter = {...character};
     await saveRickAndMortyDetailData(updatedCharacter);
-    loadRickAndMortyCharacter();
   }
 
   React.useEffect(() => {

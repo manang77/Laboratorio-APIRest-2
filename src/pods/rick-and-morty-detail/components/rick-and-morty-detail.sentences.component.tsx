@@ -22,6 +22,7 @@ export const RickAndMortyBestSentencesComponent: React.FC<Props> = (props) => {
   const [open, setOpen] = React.useState(false);
   const [sentenceToEdit, setSentenceToEdit] = React.useState('');
   const [index, setIndex] = React.useState(-1);
+  const [bestSentences, setBestSentences] = React.useState([]);
 
   const handleNewClickButton = () => {
     setSentenceToEdit('');
@@ -36,29 +37,36 @@ export const RickAndMortyBestSentencesComponent: React.FC<Props> = (props) => {
   };
 
   const handleDeleteClickButton = (sentenceToDelete: string, index: number) => {
-    const newBestSentences = characterBestSentences.filter(
+    const newBestSentences = bestSentences.filter(
       (char, i) => char !== sentenceToDelete || i !== index
     );
+    setBestSentences(newBestSentences);
     updateCharacterSentences(newBestSentences);
   };
 
   const updateSentence = (newSentence: string) => {
     if (index === -1) {
-      const newBestSentences = [...characterBestSentences, newSentence];
+      const newBestSentences = [...bestSentences, newSentence];
+      setBestSentences(newBestSentences);
       updateCharacterSentences(newBestSentences);
     } else {
-      const newBestSentences = characterBestSentences.map((char, i) => {
+      const newBestSentences = bestSentences.map((char, i) => {
         if (char === sentenceToEdit && i === index) {
           return newSentence;
         } else {
           return char;
         }
       });
+      setBestSentences(newBestSentences);
       updateCharacterSentences(newBestSentences);
     }
     setSentenceToEdit('');
     setIndex(-1);
   };
+
+  React.useEffect(() => {
+    setBestSentences([...characterBestSentences]);
+  }, [characterBestSentences]);
 
   return (
     <>
@@ -88,7 +96,7 @@ export const RickAndMortyBestSentencesComponent: React.FC<Props> = (props) => {
             </IconButton>
           </div>
         </div>
-        {characterBestSentences.map((item, index) => (
+        {bestSentences.map((item, index) => (
           <div
             key={index}
             className={rickyAndMortyDetailClasses.bestSentenceLineContainer}
