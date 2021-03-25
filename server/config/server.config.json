@@ -1,0 +1,5 @@
+{
+    "BASE_URL_SERVER": "http://localhost",
+    "SERVER_PORT": 3000,
+    "DEFAULT_SERVER_PAGE_SIZE": 20
+}
