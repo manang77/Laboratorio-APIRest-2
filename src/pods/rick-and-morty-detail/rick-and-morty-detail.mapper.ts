@@ -12,7 +12,7 @@ export const mapRickAndMortyCharacterDataFromApiToVM = (
     gender: rickAndMortyCharacterDataApi.gender,
     origin: rickAndMortyCharacterDataApi.origin.name,
     location: rickAndMortyCharacterDataApi.location.name,
-    image: rickAndMortyCharacterDataApi.image,
+    image: `${process.env.BASE_SERVER_URL}/avatar/${rickAndMortyCharacterDataApi.image}`,
     bestSentences: rickAndMortyCharacterDataApi.bestSentences,
   };
   return rickAndMortyDetailVm;

@@ -10,7 +10,7 @@ import { linkRoutes } from 'core/router';
 import IconButton from '@material-ui/core/IconButton';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { useHistory } from 'react-router-dom';
-import * as rickAndMortyClasses from '../rick-and-morty.stylyes';
+import * as rickAndMortyClasses from '../rick-and-morty.styles';
 
 interface Props {
   rickAndMortyCharacter: RickAndMortyDataVm;

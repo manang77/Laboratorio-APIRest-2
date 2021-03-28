@@ -1,14 +1,14 @@
 import React from 'react';
 import { ApplicationContext } from 'common-app/context';
-import { RickAndMortyDataVm } from './rick-and-morty.vm';
-import { RickAndMorthyCharacterComponent } from './components';
+import { EpisodesDataVm } from './episodes.vm';
+import { EpisodeComponent } from './components';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import * as rickAndMortyClasses from './rick-and-morty.styles';
+import * as episodesClasses from './episodes.styles';
 
 interface Props {
-  rickAndMortyCharacters: RickAndMortyDataVm[];
+  episodes: EpisodesDataVm[];
   updateSearchText: (newSearchText: string) => void;
 }
 
@@ -21,35 +21,34 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const RickAndMortyComponent: React.FC<Props> = props => {
-  const {
-    rickAndMortySearchText,
-    setRickAndMortySearchText,
-  } = React.useContext(ApplicationContext);
+export const EpisodesComponent: React.FC<Props> = props => {
+  const { episodesSearchText, setEpisodesSearchText } = React.useContext(
+    ApplicationContext
+  );
 
-  const [searchText, setSearchText] = React.useState(rickAndMortySearchText);
-  const { rickAndMortyCharacters, updateSearchText } = props;
+  const [searchText, setSearchText] = React.useState(episodesSearchText);
+  const { episodes, updateSearchText } = props;
   const classes = useStyles();
 
   const setInputSearchText = (newSearchValue: string) => {
     setSearchText(newSearchValue);
     updateSearchText(newSearchValue);
-    setRickAndMortySearchText(newSearchValue);
+    setEpisodesSearchText(newSearchValue);
   };
 
   return (
     <>
-      <div className={rickAndMortyClasses.searchContainer}>
+      <div className={episodesClasses.searchContainer}>
         <div>
           <TextField
             id="search-text"
             value={searchText}
-            onChange={e => setInputSearchText(e.target.value)}
+            onChange={(e) => setInputSearchText(e.target.value)}
             label="Search"
           />
         </div>
       </div>
-      <div className={rickAndMortyClasses.cardsContainer}>
+      <div className={episodesClasses.cardsContainer}>
         <Grid
           className={classes.root}
           container
@@ -57,11 +56,11 @@ export const RickAndMortyComponent: React.FC<Props> = props => {
           wrap={'wrap'}
           justify={'flex-start'}
         >
-          {rickAndMortyCharacters.map((character, index) => (
+          {episodes.map((episode, index) => (
             <Grid key={index} item xs={3}>
-              <RickAndMorthyCharacterComponent
+              <EpisodeComponent
                 key={index}
-                rickAndMortyCharacter={character}
+                episode={episode}
               />
             </Grid>
           ))}

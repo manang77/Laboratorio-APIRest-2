@@ -1,4 +1,4 @@
-export const pageSize = 8;
+export const pageSize = 12;
 
 export interface ServerPagesCalculation {
   dataPage1: number;

@@ -1,47 +1,45 @@
 import React from 'react';
 import { ApplicationContext } from 'common-app/context';
-import { RickAndMortyVm, RickAndMortyDataVm } from './rick-and-morty.vm';
-import { getRickAndMortyData } from './rick-and-morty.api.vm';
-import { RickAndMortyComponent } from './rick-and-morty.component';
+import { EpisodesDataVm, EpisodesVm } from './episodes.vm';
+import { getEpisodesData } from './episodes.api.vm';
+import { EpisodesComponent } from './episodes.component';
 import { ItemsPagination } from 'common/components/pagination';
 import {
   ServerPagesCalculation,
   calculateServerPages,
   pageSize,
-} from './rick-and-morty.utils';
+} from './episodes.utils';
 import { useDebounce } from 'use-debounce';
 import Alert from '@material-ui/lab/Alert';
-import * as rickAndMortyDetailStyles from './rick-and-morty.styles';
+import * as episodeStyles from './episodes.styles';
 
-export const RickAndMortyContainer: React.FC = () => {
+export const EpisodesContainer: React.FC = () => {
   const {
-    rickAndMortySearchText,
-    rickAndMortyNavigationPage,
-    setRickAndMortyNavigationPage,
+    episodesSearchText,
+    episodesNavigationPage,
+    setEpisodesNavigationPage,
   } = React.useContext(ApplicationContext);
 
-  const [charactersData, setCharactersData] = React.useState({});
-  const [displayedCharacters, setdisplayedCharacters] = React.useState([]);
+  const [episodesData, setEpisodesData] = React.useState({});
+  const [displayedEpisodes, setDisplayedEpisodes] = React.useState([]);
   const [displayedPages, setDisplayedPages] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
-  const [searchText, setSearchText] = React.useState(rickAndMortySearchText);
+  const [searchText, setSearchText] = React.useState(episodesSearchText);
   const [messageState, setMessageState] = React.useState(true);
   const [initialPageLoad, setInitialPageLoad] = React.useState(true);
   const [debouncedSearchText] = useDebounce(searchText, 500);
-  const [totalChars, setTotalChars] = React.useState(0);
-  const [charactersToDisplay, setCharactersToDisplay] = React.useState(true);
+  const [totalEpisodes, setTotalEpisodes] = React.useState(0);
+  const [episodesToDisplay, setEpisodesToDisplay] = React.useState(true);
 
-  const updateServerPages = (page: number, data: RickAndMortyDataVm[]) => {
+  const updateServerPages = (page: number, data: EpisodesDataVm[]) => {
     const dataServerNewPage = {};
     dataServerNewPage[page] = data;
-    const newServerData = { ...charactersData, ...dataServerNewPage };
-    setCharactersData({ ...newServerData });
+    const newServerData = { ...episodesData, ...dataServerNewPage };
+    setEpisodesData({ ...newServerData });
   };
 
-  const loadNewServerDataPage = async (
-    page: number
-  ): Promise<RickAndMortyVm> => {
-    const newServerDataPage = await getRickAndMortyData(
+  const loadNewServerDataPage = async (page: number): Promise<EpisodesVm> => {
+    const newServerDataPage = await getEpisodesData(
       page,
       debouncedSearchText
     );
@@ -52,31 +50,31 @@ export const RickAndMortyContainer: React.FC = () => {
     page: number,
     ind1: number,
     ind2: number
-  ): Promise<RickAndMortyDataVm[]> => {
-    const dataServerPage = charactersData[page];
+  ): Promise<EpisodesDataVm[]> => {
+    const dataServerPage = episodesData[page];
     if (dataServerPage) {
       return dataServerPage.slice(ind1, ind2);
     } else {
       const newServerDataPage = await loadNewServerDataPage(page);
-      updateServerPages(page, newServerDataPage.rickAndMortyCharactersData);
-      return newServerDataPage.rickAndMortyCharactersData.slice(ind1, ind2);
+      updateServerPages(page, newServerDataPage.EpisodesData);
+      return newServerDataPage.EpisodesData.slice(ind1, ind2);
     }
   };
 
   const loadConfigData = async (page: number) => {
-    setdisplayedCharacters([]);
+    setDisplayedEpisodes([]);
     const serverPages: ServerPagesCalculation = calculateServerPages(page);
-    const firstDataPage = await getRickAndMortyData(
+    const firstDataPage = await getEpisodesData(
       serverPages.dataPage1,
       debouncedSearchText
     );
-    const totalCharactersCount = firstDataPage.config.count;
-    setTotalChars(totalCharactersCount);
+    const totalEpisodesCount = firstDataPage.config.count;
+    setTotalEpisodes(totalEpisodesCount);
 
-    if (totalCharactersCount > 0) {
+    if (totalEpisodesCount > 0) {
       updateServerPages(
         serverPages.dataPage1,
-        firstDataPage.rickAndMortyCharactersData
+        firstDataPage.EpisodesData
       );
       if (serverPages.dataPage1 !== serverPages.dataPage2) {
         const secondServerPage = await loadNewServerDataPage(
@@ -84,45 +82,46 @@ export const RickAndMortyContainer: React.FC = () => {
         );
         updateServerPages(
           serverPages.dataPage2,
-          secondServerPage.rickAndMortyCharactersData
+          secondServerPage.EpisodesData
         );
       }
       setCurrentPage(page);
       setMessageState(true);
-      setCharactersToDisplay(false);
-      setDisplayedPages(Math.ceil(totalCharactersCount / pageSize));
+      setEpisodesToDisplay(false);
+      setDisplayedPages(Math.ceil(totalEpisodesCount / pageSize));
     } else {
       setDisplayedPages(0);
       setCurrentPage(0);
       setMessageState(false);
-      setCharactersToDisplay(true);
+      setEpisodesToDisplay(true);
     }
   };
 
   const loadVisualizationPage = async (page: number) => {
     const serverPages: ServerPagesCalculation = calculateServerPages(
       page,
-      totalChars
+      totalEpisodes
     );
-    const characterData1 = await getDataFromServerPages(
+    const episodeData1 = await getDataFromServerPages(
       serverPages.dataPage1,
       serverPages.pos11,
       serverPages.pos12
     );
     if (serverPages.dataPage1 === serverPages.dataPage2) {
-      setdisplayedCharacters([...characterData1]);
+      setDisplayedEpisodes([...episodeData1]);
     } else {
-      const characterData2 = await getDataFromServerPages(
+      const episodeData2 = await getDataFromServerPages(
         serverPages.dataPage2,
         serverPages.pos21,
         serverPages.pos22
       );
-      setdisplayedCharacters([...characterData1, ...characterData2]);
+      setDisplayedEpisodes([...episodeData1, ...episodeData2]);
+      console.log(displayedEpisodes);
     }
   };
 
   React.useEffect(() => {
-    setCharactersData({});
+    setEpisodesData({});
     setCurrentPage(-1);
   }, [debouncedSearchText]);
 
@@ -130,7 +129,7 @@ export const RickAndMortyContainer: React.FC = () => {
     if (currentPage === -1) {
       if (initialPageLoad) {
         loadConfigData(
-          rickAndMortyNavigationPage === 0 ? 1 : rickAndMortyNavigationPage
+          episodesNavigationPage === 0 ? 1 : episodesNavigationPage
         );
         setInitialPageLoad(false);
       } else {
@@ -138,18 +137,18 @@ export const RickAndMortyContainer: React.FC = () => {
       }
     } else if (currentPage > 0) {
       loadVisualizationPage(currentPage);
-      setRickAndMortyNavigationPage(currentPage);
+      setEpisodesNavigationPage(currentPage);
     }
   }, [currentPage]);
 
   React.useEffect(() => {
-    if (rickAndMortyNavigationPage !== 0) {
+    if (episodesNavigationPage !== 0) {
       setCurrentPage(-1);
     }
   }, []);
 
   const setPageContainer = React.useCallback((newPage: number) => {
-    setRickAndMortyNavigationPage(newPage);
+    setEpisodesNavigationPage(newPage);
     setCurrentPage(newPage);
   }, []);
 
@@ -159,22 +158,19 @@ export const RickAndMortyContainer: React.FC = () => {
 
   return (
     <>
-      <div
-        className={rickAndMortyDetailStyles.noCharactersAlert}
-        hidden={messageState}
-      >
+      <div className={episodeStyles.noEpisodessAlert} hidden={messageState}>
         <Alert
           variant="filled"
           severity="info"
-        >{`There is no characters for search criteria`}</Alert>
+        >{`There is no episodes for search criteria`}</Alert>
       </div>
-      <div className={rickAndMortyDetailStyles.cardsListContainer}>
-        <RickAndMortyComponent
-          rickAndMortyCharacters={displayedCharacters}
+      <div className={episodeStyles.cardsListContainer}>
+        <EpisodesComponent
+          episodes={displayedEpisodes}
           updateSearchText={updateSearchText}
         />
       </div>
-      <div hidden={charactersToDisplay}>
+      <div hidden={episodesToDisplay}>
         <ItemsPagination
           pages={displayedPages}
           currentPage={currentPage}

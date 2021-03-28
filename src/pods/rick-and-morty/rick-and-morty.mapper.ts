@@ -9,10 +9,11 @@ import {
 const mapRickAndMortyCharacterDataFromApiToVM = (
   apiCharacterData: Character
 ): RickAndMortyDataVm => {
-  const rickAndMortyDataVm: RickAndMortyDataVm = getNewRickAndMortyDataVm();
-  rickAndMortyDataVm.image = apiCharacterData.image;
-  rickAndMortyDataVm.name = apiCharacterData.name;
-  rickAndMortyDataVm.id = apiCharacterData.id.toString();
+  const rickAndMortyDataVm: RickAndMortyDataVm = {
+    id: apiCharacterData.id.toString(),
+    name: apiCharacterData.name,
+    image: `${process.env.BASE_SERVER_URL}/avatar/${apiCharacterData.image}`,
+  }
   return rickAndMortyDataVm;
 };
 
