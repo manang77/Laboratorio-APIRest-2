@@ -23,6 +23,7 @@ const getEpisodeCharactersData = async (urlCharacter: string): Promise<EpisodeCh
   const characterName: string = await getCharacterName(characterId);
 
   const character: EpisodeCharVm = {
+    id: characterId,
     name: characterName,
     image: `${process.env.BASE_SERVER_URL}/avatar/${characterId}.jpeg`,
   }

@@ -3,22 +3,18 @@ import { css } from '@emotion/css';
 export const cardBlockContainer = css`
   display: flex;
   flex-direction: row;
-  gap: 2.5em;
+  gap: 1.4em;
   justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
   width: 100%;
 `;
 
-export const lineButtonIcon = css`
-  padding-left: 90%;
-`;
-
 export const imageContainer = css`
-  height: 15em;
-  width: 15em;
+  height: 13em;
+  width: 13em;
   border: 1px solid darkgray;
-  box-shadow: 9px 9px 10px lightslategray;
+  box-shadow: 9px 9px 10px dimgray;
 `;
 
 export const characterImage = css`
@@ -32,3 +28,15 @@ export const characterName = css`
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 `;
 
+export const cardHeaderContainer = css`
+  text-align: center;
+  font-weight: bold;
+  font-size: 10em;
+`;
+
+export const lineButtonIcon = css`
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  padding-left: 90%;
+`;

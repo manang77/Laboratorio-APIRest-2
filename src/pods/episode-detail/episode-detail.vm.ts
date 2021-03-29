@@ -1,4 +1,5 @@
 export interface EpisodeCharVm {
+  id: string;
   name: string;
   image: string;
 }
