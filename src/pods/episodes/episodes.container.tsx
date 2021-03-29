@@ -116,7 +116,6 @@ export const EpisodesContainer: React.FC = () => {
         serverPages.pos22
       );
       setDisplayedEpisodes([...episodeData1, ...episodeData2]);
-      console.log(displayedEpisodes);
     }
   };
 
