@@ -13,7 +13,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       backgroundColor: 'oldlace',
-      width: '75%',
+      width: 'auto',
       minHeight: '6em',
     },
     icon: {

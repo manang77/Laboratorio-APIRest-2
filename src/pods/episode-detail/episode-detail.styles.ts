@@ -38,5 +38,20 @@ export const lineButtonIcon = css`
   margin-top: 0px;
   margin-bottom: 0px;
   padding-top: 0px;
-  padding-left: 90%;
+  padding-left: 92%;
+`;
+
+export const charactersContainer = css`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const characterList = css`
+  width: 90%;
+`;
+
+export const messageContainer = css`
+  width: 100%;
 `;

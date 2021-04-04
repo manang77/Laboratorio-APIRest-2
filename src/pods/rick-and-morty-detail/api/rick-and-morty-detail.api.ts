@@ -4,14 +4,10 @@ import { RickAndMortyCharacterDataApi, RickAndMortyCharacterDataApiForUpdate } f
 export const getRickAndMorthyCharacterDetail = async (
   id: string
 ): Promise<RickAndMortyCharacterDataApi> => {
-
   const urlBase = `${process.env.BASE_SERVER_URL}/api/characters/${id}`;
-  const { data } = await Axios.get<
-    RickAndMortyCharacterDataApi
-  >(urlBase);
+  const { data } = await Axios.get<RickAndMortyCharacterDataApi>(urlBase);
   return data;
 };
-
 
 export const saveRickAndMortyCharacter = async (rickAndMortyCharacter: RickAndMortyCharacterDataApiForUpdate): Promise<boolean> => {
   const urlBase = `${process.env.BASE_SERVER_URL}/characters/${rickAndMortyCharacter.id}`;

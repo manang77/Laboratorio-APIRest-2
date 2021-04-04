@@ -26,6 +26,7 @@ export const EpisodesContainer: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(0);
   const [searchText, setSearchText] = React.useState(episodesSearchText);
   const [messageState, setMessageState] = React.useState(true);
+  const [messageText, setMessageText] = React.useState('');
   const [initialPageLoad, setInitialPageLoad] = React.useState(true);
   const [debouncedSearchText] = useDebounce(searchText, 500);
   const [totalEpisodes, setTotalEpisodes] = React.useState(0);
@@ -39,11 +40,19 @@ export const EpisodesContainer: React.FC = () => {
   };
 
   const loadNewServerDataPage = async (page: number): Promise<EpisodesVm> => {
-    const newServerDataPage = await getEpisodesData(
-      page,
-      debouncedSearchText
-    );
-    return newServerDataPage;
+    try {
+      const newServerDataPage = await getEpisodesData(
+        page,
+        debouncedSearchText
+      );
+      return newServerDataPage;
+    } catch (err) {
+      setDisplayedPages(0);
+      setCurrentPage(0);
+      setMessageText(`An error has occurred: ${err}`);
+      setMessageState(false);
+      setEpisodesToDisplay(true);
+    }
   };
 
   const getDataFromServerPages = async (
@@ -64,34 +73,40 @@ export const EpisodesContainer: React.FC = () => {
   const loadConfigData = async (page: number) => {
     setDisplayedEpisodes([]);
     const serverPages: ServerPagesCalculation = calculateServerPages(page);
-    const firstDataPage = await getEpisodesData(
-      serverPages.dataPage1,
-      debouncedSearchText
-    );
-    const totalEpisodesCount = firstDataPage.config.count;
-    setTotalEpisodes(totalEpisodesCount);
-
-    if (totalEpisodesCount > 0) {
-      updateServerPages(
+    try {
+      const firstDataPage = await getEpisodesData(
         serverPages.dataPage1,
-        firstDataPage.EpisodesData
+        debouncedSearchText
       );
-      if (serverPages.dataPage1 !== serverPages.dataPage2) {
-        const secondServerPage = await loadNewServerDataPage(
-          serverPages.dataPage2
-        );
-        updateServerPages(
-          serverPages.dataPage2,
-          secondServerPage.EpisodesData
-        );
+      const totalEpisodesCount = firstDataPage.config.count;
+      setTotalEpisodes(totalEpisodesCount);
+
+      if (totalEpisodesCount > 0) {
+        updateServerPages(serverPages.dataPage1, firstDataPage.EpisodesData);
+        if (serverPages.dataPage1 !== serverPages.dataPage2) {
+          const secondServerPage = await loadNewServerDataPage(
+            serverPages.dataPage2
+          );
+          updateServerPages(
+            serverPages.dataPage2,
+            secondServerPage.EpisodesData
+          );
+        }
+        setCurrentPage(page);
+        setMessageState(true);
+        setEpisodesToDisplay(false);
+        setDisplayedPages(Math.ceil(totalEpisodesCount / pageSize));
+      } else {
+        setDisplayedPages(0);
+        setCurrentPage(0);
+        setMessageText(`There is no episodes for search criteria`);
+        setMessageState(false);
+        setEpisodesToDisplay(true);
       }
-      setCurrentPage(page);
-      setMessageState(true);
-      setEpisodesToDisplay(false);
-      setDisplayedPages(Math.ceil(totalEpisodesCount / pageSize));
-    } else {
+    } catch (err) {
       setDisplayedPages(0);
       setCurrentPage(0);
+      setMessageText(`An error has occurred: ${err}`);
       setMessageState(false);
       setEpisodesToDisplay(true);
     }
@@ -158,10 +173,9 @@ export const EpisodesContainer: React.FC = () => {
   return (
     <>
       <div className={episodeStyles.noEpisodessAlert} hidden={messageState}>
-        <Alert
-          variant="filled"
-          severity="info"
-        >{`There is no episodes for search criteria`}</Alert>
+        <Alert variant="filled" severity="info">
+          {messageText}
+        </Alert>
       </div>
       <div className={episodeStyles.cardsListContainer}>
         <EpisodesComponent

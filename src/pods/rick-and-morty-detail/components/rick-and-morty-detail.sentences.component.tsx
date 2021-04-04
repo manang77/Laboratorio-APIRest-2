@@ -9,7 +9,7 @@ import { CharacterNewSentenceComponent } from '../components';
 interface Props {
   characterName: string;
   characterBestSentences: string[];
-  updateCharacterSentences: (updatedSentences: string[]) => void;
+  updateCharacterSentences: (updatedSentences: string[]) => Promise<boolean>;
 }
 
 export const RickAndMortyBestSentencesComponent: React.FC<Props> = (props) => {
@@ -36,19 +36,26 @@ export const RickAndMortyBestSentencesComponent: React.FC<Props> = (props) => {
     setOpen(true);
   };
 
-  const handleDeleteClickButton = (sentenceToDelete: string, index: number) => {
+  const handleDeleteClickButton = async (
+    sentenceToDelete: string,
+    index: number
+  ) => {
     const newBestSentences = bestSentences.filter(
       (char, i) => char !== sentenceToDelete || i !== index
     );
-    setBestSentences(newBestSentences);
-    updateCharacterSentences(newBestSentences);
+    const result: boolean = await updateCharacterSentences(newBestSentences);
+    if (result) {
+      setBestSentences(newBestSentences);
+    }
   };
 
-  const updateSentence = (newSentence: string) => {
+  const updateSentence = async (newSentence: string) => {
     if (index === -1) {
       const newBestSentences = [...bestSentences, newSentence];
-      setBestSentences(newBestSentences);
-      updateCharacterSentences(newBestSentences);
+      const result: boolean = await updateCharacterSentences(newBestSentences);
+      if (result) {
+        setBestSentences(newBestSentences);
+      }
     } else {
       const newBestSentences = bestSentences.map((char, i) => {
         if (char === sentenceToEdit && i === index) {
@@ -57,8 +64,10 @@ export const RickAndMortyBestSentencesComponent: React.FC<Props> = (props) => {
           return char;
         }
       });
-      setBestSentences(newBestSentences);
-      updateCharacterSentences(newBestSentences);
+      const result: boolean = await updateCharacterSentences(newBestSentences);
+      if (result) {
+        setBestSentences(newBestSentences);
+      }
     }
     setSentenceToEdit('');
     setIndex(-1);

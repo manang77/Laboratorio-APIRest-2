@@ -19,16 +19,3 @@ export interface EpisodesApiModel {
   info: Info;
   results: Episode[];
 }
-
-export const getNewRickAndMortyApiModel = () => {
-  const info: Info = {
-    count: 0,
-    pages: 0,
-    next: '',
-    prev: '',
-  };
-  return {
-    info: info,
-    results: [],
-  };
-};

@@ -22,6 +22,11 @@ export const lineButtonIcon = css`
 `;
 
 
+export const cardContainer = css`
+  padding-top: 3em;
+
+`;
+
 export const cardBlockContainer = css`
   display: flex;
   flex-direction: row;
@@ -66,7 +71,7 @@ export const buttonContainer = css`
 `;
 
 export const bestSentencesTextContainer = css`
-   width: 80%;
+   width: 100%;
    padding-left: 1em;
 `;
 
@@ -78,4 +83,17 @@ export const dialogInput = css`
    width: 100%;
 `;
 
+export const characterContainer = css`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
+export const messageContainer = css`
+  width: 100%;
+`;
+
+export const characterCardContainer = css`
+  width: 100%;
+`;

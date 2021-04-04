@@ -8,11 +8,11 @@ import { mapRickAndMortyCharacterDataFromApiToVM } from './rick-and-morty-detail
 export const getRickAndMortyDetailData = async (
   id: string
 ): Promise<RickAndMortyDetailVm> => {
-  const rickAndMortyApi: RickAndMortyCharacterDataApi = await getRickAndMorthyCharacterDetail(
-    id
-  );
-  const rickAndMortyDetailVm: RickAndMortyDetailVm = mapRickAndMortyCharacterDataFromApiToVM(
-    rickAndMortyApi
-  );
-  return rickAndMortyDetailVm;
+  try {
+    const rickAndMortyApi: RickAndMortyCharacterDataApi = await getRickAndMorthyCharacterDetail(id);
+    const rickAndMortyDetailVm: RickAndMortyDetailVm = mapRickAndMortyCharacterDataFromApiToVM(rickAndMortyApi);
+    return rickAndMortyDetailVm;
+  } catch (error) {
+    throw error.message;
+  }
 };

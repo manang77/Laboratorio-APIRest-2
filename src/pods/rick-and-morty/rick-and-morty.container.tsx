@@ -26,6 +26,7 @@ export const RickAndMortyContainer: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState(0);
   const [searchText, setSearchText] = React.useState(rickAndMortySearchText);
   const [messageState, setMessageState] = React.useState(true);
+  const [messageText, setMessageText] = React.useState('');
   const [initialPageLoad, setInitialPageLoad] = React.useState(true);
   const [debouncedSearchText] = useDebounce(searchText, 500);
   const [totalChars, setTotalChars] = React.useState(0);
@@ -41,11 +42,19 @@ export const RickAndMortyContainer: React.FC = () => {
   const loadNewServerDataPage = async (
     page: number
   ): Promise<RickAndMortyVm> => {
-    const newServerDataPage = await getRickAndMortyData(
-      page,
-      debouncedSearchText
-    );
-    return newServerDataPage;
+    try {
+      const newServerDataPage = await getRickAndMortyData(
+        page,
+        debouncedSearchText
+      );
+      return newServerDataPage;
+    } catch (err) {
+      setDisplayedPages(0);
+      setCurrentPage(0);
+      setMessageText(`An error has occurred: ${err}`);
+      setMessageState(false);
+      setCharactersToDisplay(true);
+    }
   };
 
   const getDataFromServerPages = async (
@@ -66,34 +75,43 @@ export const RickAndMortyContainer: React.FC = () => {
   const loadConfigData = async (page: number) => {
     setdisplayedCharacters([]);
     const serverPages: ServerPagesCalculation = calculateServerPages(page);
-    const firstDataPage = await getRickAndMortyData(
-      serverPages.dataPage1,
-      debouncedSearchText
-    );
-    const totalCharactersCount = firstDataPage.config.count;
-    setTotalChars(totalCharactersCount);
-
-    if (totalCharactersCount > 0) {
-      updateServerPages(
+    try {
+      const firstDataPage = await getRickAndMortyData(
         serverPages.dataPage1,
-        firstDataPage.rickAndMortyCharactersData
+        debouncedSearchText
       );
-      if (serverPages.dataPage1 !== serverPages.dataPage2) {
-        const secondServerPage = await loadNewServerDataPage(
-          serverPages.dataPage2
-        );
+      const totalCharactersCount = firstDataPage.config.count;
+      setTotalChars(totalCharactersCount);
+
+      if (totalCharactersCount > 0) {
         updateServerPages(
-          serverPages.dataPage2,
-          secondServerPage.rickAndMortyCharactersData
+          serverPages.dataPage1,
+          firstDataPage.rickAndMortyCharactersData
         );
+        if (serverPages.dataPage1 !== serverPages.dataPage2) {
+          const secondServerPage = await loadNewServerDataPage(
+            serverPages.dataPage2
+          );
+          updateServerPages(
+            serverPages.dataPage2,
+            secondServerPage.rickAndMortyCharactersData
+          );
+        }
+        setCurrentPage(page);
+        setMessageState(true);
+        setCharactersToDisplay(false);
+        setDisplayedPages(Math.ceil(totalCharactersCount / pageSize));
+      } else {
+        setDisplayedPages(0);
+        setCurrentPage(0);
+        setMessageText(`There is no characters for search criteria`);
+        setMessageState(false);
+        setCharactersToDisplay(true);
       }
-      setCurrentPage(page);
-      setMessageState(true);
-      setCharactersToDisplay(false);
-      setDisplayedPages(Math.ceil(totalCharactersCount / pageSize));
-    } else {
+    } catch (err) {
       setDisplayedPages(0);
       setCurrentPage(0);
+      setMessageText(`An error has occurred: ${err}`);
       setMessageState(false);
       setCharactersToDisplay(true);
     }
@@ -163,10 +181,9 @@ export const RickAndMortyContainer: React.FC = () => {
         className={rickAndMortyDetailStyles.noCharactersAlert}
         hidden={messageState}
       >
-        <Alert
-          variant="filled"
-          severity="info"
-        >{`There is no characters for search criteria`}</Alert>
+        <Alert variant="filled" severity="info">
+          {messageText}
+        </Alert>
       </div>
       <div className={rickAndMortyDetailStyles.cardsListContainer}>
         <RickAndMortyComponent

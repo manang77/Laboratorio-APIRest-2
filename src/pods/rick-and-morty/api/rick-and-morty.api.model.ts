@@ -36,15 +36,3 @@ export interface RickAndMortyApiModel {
   results: Character[];
 }
 
-export const getNewRickAndMortyApiModel = () => {
-  const info: Info = {
-    count: 0,
-    pages: 0,
-    next: '',
-    prev: '',
-  };
-  return {
-    info: info,
-    results: [],
-  };
-};

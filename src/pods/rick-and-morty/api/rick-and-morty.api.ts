@@ -1,7 +1,6 @@
 import Axios from 'axios';
 import {
   RickAndMortyApiModel,
-  getNewRickAndMortyApiModel,
 } from './rick-and-morty.api.model';
 
 export const getRickAndMorthyCharacters = async (

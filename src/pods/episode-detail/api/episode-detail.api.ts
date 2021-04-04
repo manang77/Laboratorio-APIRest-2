@@ -19,9 +19,7 @@ export const getCharacterData = async (
   charactersIds: string
 ): Promise<CharacterDataApi> => {
   const urlBase = `${process.env.BASE_SERVER_URL}/api/characters/${charactersIds}`;
-  const { data } = await Axios.get<
-    CharacterDataApi
-  >(urlBase);
+  const { data } = await Axios.get<CharacterDataApi>(urlBase);
   return data;
 }
 

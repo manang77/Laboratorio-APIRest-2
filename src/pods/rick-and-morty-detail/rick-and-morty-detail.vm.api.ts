@@ -5,8 +5,10 @@ import { mapRickAndMortyCharacterDataFromVMToApi } from './rick-and-morty-detail
 export const saveRickAndMortyDetailData = async (
   rickAndMortyDetailVm: RickAndMortyDetailVm
 ): Promise<boolean> => {
-  const rickAndMortyApiForUpdate: RickAndMortyCharacterDataApiForUpdate = mapRickAndMortyCharacterDataFromVMToApi(rickAndMortyDetailVm);
-
-  return await saveRickAndMortyCharacter(rickAndMortyApiForUpdate);
-
+  try {
+    const rickAndMortyApiForUpdate: RickAndMortyCharacterDataApiForUpdate = mapRickAndMortyCharacterDataFromVMToApi(rickAndMortyDetailVm);
+    return await saveRickAndMortyCharacter(rickAndMortyApiForUpdate);
+  } catch (err) {
+    throw err.message
+  }
 };
