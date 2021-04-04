@@ -37,7 +37,6 @@ export const RickAndMortyDetailContainer: React.FC = () => {
       setDataState(false);
     } catch (err) {
       setMessageText(`An error has occurred: ${err}`);
-      setButtonState(false);
       setMessageState(false);
     }
   };
